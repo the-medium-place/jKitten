@@ -62,7 +62,7 @@ function renderScores() {
     } else {
         for (var i = 0; i < storedScore.length; i++) {
             var newLi = $("<li>");
-            newLi.text(sortedScores[i].initials + " ----- " + sortedScores[i].score)
+            newLi.text(storedScore[i].initials + " ----- " + storedScore[i].score)
             scoreList.append(newLi)
         }
     }
