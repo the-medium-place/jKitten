@@ -5,10 +5,13 @@ var startBtn = $("#start-btn");
 var clickBtn = $("#click-btn");
 var timerText = $("#timer-text");
 var secondsText = $("#seconds");
+var scoreList = $("#highscores");
 
 var timer = 5;
 var scoreCounter = 0;
 var currentIndex = 0;
+
+var storedScore = JSON.parse(localStorage.getItem('scores')) || [];
 
 var kittenArr = [
     {
@@ -44,11 +47,26 @@ var kittenArr = [
         desc: "whoa, man. too cute."
     },
 ]
-
+clickBtn.hide();
 renderKitten();
+renderScores();
 function renderKitten() {
     kittenPic.attr('src', kittenArr[currentIndex].url)
     kittenDesc.text(kittenArr[currentIndex].desc)
+}
+
+function renderScores() {
+    scoreList.empty();
+    if (storedScore.length === 0) {
+        scoreList.append("please play the game to store your score")
+    } else {
+        for (var i = 0; i < storedScore.length; i++) {
+            var newLi = $("<li>");
+            newLi.text(storedScore[i].initials + " ----- " + storedScore[i].score)
+            scoreList.append(newLi)
+        }
+
+    }
 }
 
 clickBtn.on('click', function () {
@@ -61,13 +79,31 @@ clickBtn.on('click', function () {
 })
 
 startBtn.on('click', function () {
+    clickBtn.show();
+    startBtn.hide();
+    timer = 5;
+    scoreCounter = 0;
+    secondsText.text(timer);
+
     // create and start timer
     var gameTimer = setInterval(() => {
         timer--;
         secondsText.text(timer);
         if (timer === 0) {
+            startBtn.show();
+            clickBtn.hide();
             clearInterval(gameTimer)
             alert('Game Over!! \n Your Score was: ' + scoreCounter)
+            var userInits = prompt('What are your Initials?')
+
+            var scoreObj = {
+                initials: userInits,
+                score: scoreCounter
+            }
+
+            storedScore.push(scoreObj);
+            localStorage.setItem('scores', JSON.stringify(storedScore))
+            renderScores();
         };
 
 
